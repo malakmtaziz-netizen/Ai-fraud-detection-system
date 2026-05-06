@@ -14,24 +14,29 @@ st.markdown("""
 
 /* Main App */
 .stApp {
-    background: #0f172a;
+    background: #0f172a; /* Reverted to original dark background */
     color: #f8fafc;
 }
 
+/* Top Header (Deploy Bar) */
+header[data-testid="stHeader"] {
+    background-color: #89CFF0 !important;
+}
+
 /* All Text */
-html, body, p, span, label, div {
+html, body, p, label {
     color: #f8fafc !important;
     font-family: 'Segoe UI', sans-serif;
 }
 
 /* Headers */
 h1 {
-    color: #38bdf8 !important;
+    color: #38bdf8 !important; /* Reverted to original light blue */
     font-weight: bold;
 }
 
-h2, h3 {
-    color: #7dd3fc !important;
+h2, h3, h4 {
+    color: #7dd3fc !important; /* Reverted to original light blue, added h4 for consistency */
 }
 
 /* Metric Cards */
@@ -83,43 +88,35 @@ section[data-testid="stSidebar"] * {
 
 /* Dataframe */
 table {
-    color: white !important;
-    background-color: #111827 !important;
+    color: black !important;
+    background-color: #89CFF0 !important;
 }
 
-st.dataframe(
-    filtered_df.style
-    .apply(style_risk, axis=1)
-    .set_table_styles([
-        {
-            'selector': 'th',
-            'props': [
-                ('background-color', '#fbcfe8'),
-                ('color', '#831843'),
-                ('font-size', '15px'),
-                ('font-weight', 'bold')
-            ]
-        }
-    ])
-    .set_properties(**{
-        'color': 'white',
-        'background-color': '#111111',
-        'border-color': '#333333'
-    }),
-    use_container_width=True,
-    hide_index=True,
-    height=400
-)
-
 tbody tr td {
-    background-color: #0f172a !important;
-    color: white !important;
+    background-color: #89CFF0 !important;
+    color: black !important;
+}
+
+/* Target the header bar and all its internal text/icons */
+thead th, thead th div, thead th span, thead th i {
+    background-color: #D8BFD8 !important;
+    color: #301934 !important;
 }
 
 /* Charts Background */
 .js-plotly-plot {
     border-radius: 15px;
     overflow: hidden;
+}
+
+/* Orange Filter Bar */
+.orange-bar {
+    background-color: #fb8c00 !important;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    color: white !important;
+    font-weight: bold;
+    margin-bottom: -5px;
 }
 
 </style>
@@ -186,6 +183,13 @@ with c2:
 # --- Audit Logs ---
 st.markdown("#### Detailed Forensic Audit Logs")
 
+# Orange Filter Bar
+st.markdown('<div class="orange-bar">🔍 Active Transaction Search</div>', unsafe_allow_html=True)
+search_term = st.text_input("Table Search", label_visibility="collapsed", placeholder="Search by Sender, Receiver, Type or Location...")
+if search_term:
+    search_mask = filtered_df.astype(str).apply(lambda row: row.str.contains(search_term, case=False).any(), axis=1)
+    filtered_df = filtered_df[search_mask]
+
 def style_risk(row):
     if row['risk_level'] == 'CRITICAL':
         return ['background-color: #4b0000'] * len(row)
@@ -199,17 +203,17 @@ st.dataframe(
         {
             'selector': 'th',
             'props': [
-                ('background-color', '#fbcfe8'),
-                ('color', '#831843'),
+                ('background-color', '#D8BFD8'),
+                ('color', '#301934'),
                 ('font-size', '15px'),
                 ('font-weight', 'bold')
             ]
         }
     ])
     .set_properties(**{
-        'color': 'white',
-        'background-color': '#111111',
-        'border-color': '#333333'
+        'color': 'black',
+        'background-color': '#89CFF0',
+        'border-color': '#5eb2d9'
     }),
     use_container_width=True,
     hide_index=True,
