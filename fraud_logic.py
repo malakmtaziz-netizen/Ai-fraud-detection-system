@@ -3,7 +3,7 @@ import pandas as pd
 class FraudEngine:
     def __init__(self):
         self.large_transfer_limit = 10000
-        self.high_risk_locations = ['Cayman Islands', 'Panama']
+        self.high_risk_locations = ['Cayman Islands', 'Panama', 'Turkey', 'Egypt']
 
     def run_audit(self, df):
         df = df.copy()

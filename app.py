@@ -135,7 +135,7 @@ df = st.session_state.txn_data
 # --- Sidebar Controls ---
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2830/2830305.png", width=100)
 st.sidebar.header("Audit Parameters")
-min_score = st.sidebar.slider("Minimum Risk Score to Highlight", 0, 100, 40)
+min_score = st.sidebar.slider("Minimum Risk Score to Highlight", 0, 100, 0)
 selected_location = st.sidebar.multiselect("Region Scan", df['location'].unique(), default=df['location'].unique())
 
 filtered_df = df[(df['risk_score'] >= min_score) & (df['location'].isin(selected_location))]
@@ -219,6 +219,12 @@ st.dataframe(
 # --- Presentation Demo Actions ---
 st.divider()
 d_col1, d_col2 = st.columns(2)
+
+with st.sidebar:
+    if st.button("🔄 Refresh & Regenerate Data"):
+        st.session_state.clear()
+        st.rerun()
+
 with d_col1:
     if st.button("🚀 Run Real-Time Batch Analysis"):
         with st.spinner('Scanning global ledgers...'):
