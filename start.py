@@ -1,1 +1,1 @@
-print("proje!")
+print("proje")
