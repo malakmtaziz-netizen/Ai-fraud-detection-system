@@ -130,7 +130,10 @@ if 'txn_data' not in st.session_state:
 df = st.session_state.txn_data
 
 # --- Sidebar Controls ---
-st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2830/2830305.png", width=100)
+st.sidebar.image(
+    "https://cdn-icons-png.flaticon.com/512/2092/2092663.png",
+    width=100
+)
 st.sidebar.header("Audit Parameters")
 min_score = st.sidebar.slider("Minimum Risk Score to Highlight", 0, 100, 0)
 selected_location = st.sidebar.multiselect("Region Scan", df['location'].unique(), default=df['location'].unique())
