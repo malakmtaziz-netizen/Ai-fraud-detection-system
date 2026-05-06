@@ -128,12 +128,11 @@ if 'txn_data' not in st.session_state:
     st.session_state.txn_data = engine.run_audit(raw_data)
 
 df = st.session_state.txn_data
-
 # --- Sidebar Controls ---
-st.sidebar.image(
-    "https://cdn-icons-png.flaticon.com/512/2092/2092663.png",
-    width=100
-)
+# --- Sidebar Logo ---
+st.sidebar.markdown("## 🛡️ AI Auditor")
+st.sidebar.caption("Fraud Detection System")
+st.sidebar.divider()
 st.sidebar.header("Audit Parameters")
 min_score = st.sidebar.slider("Minimum Risk Score to Highlight", 0, 100, 0)
 selected_location = st.sidebar.multiselect("Region Scan", df['location'].unique(), default=df['location'].unique())
