@@ -1,1 +1,1 @@
-print("proje basladi")
+print("projeye hoşgeldiniz")
