@@ -8,18 +8,122 @@ from fraud_logic import FraudEngine
 st.set_page_config(page_title="AI Financial Auditor", layout="wide", page_icon="🛡️")
 
 # Custom CSS for a dark, professional aesthetic
+# Beautiful Dark UI
 st.markdown("""
-    <style>
-    .main { background-color: #0e1117; }
-    .stMetric { border: 1px solid #333; padding: 15px; border-radius: 10px; background: #161b22; }
-    .css-1kyx7g3 { background-color: #ff4b4b; }
-    </style>
-    """, unsafe_allow_html=True)
+<style>
 
-st.title("🛡️ Algorithmic Financial Auditor")
-st.subheader("Automated Fraud Detection & AML Surveillance System")
-st.divider()
+/* Main App */
+.stApp {
+    background: #0f172a;
+    color: #f8fafc;
+}
 
+/* All Text */
+html, body, p, span, label, div {
+    color: #f8fafc !important;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Headers */
+h1 {
+    color: #38bdf8 !important;
+    font-weight: bold;
+}
+
+h2, h3 {
+    color: #7dd3fc !important;
+}
+
+/* Metric Cards */
+div[data-testid="metric-container"] {
+    background: linear-gradient(145deg, #111827, #1e293b);
+    border: 1px solid #334155;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(56,189,248,0.15);
+}
+
+div[data-testid="metric-container"] * {
+    color: white !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: #111827;
+    border-right: 1px solid #334155;
+}
+
+/* Sidebar Text */
+section[data-testid="stSidebar"] * {
+    color: #f8fafc !important;
+}
+
+/* Buttons */
+.stButton>button {
+    background: linear-gradient(90deg, #38bdf8, #2563eb);
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 22px;
+    font-weight: bold;
+}
+
+.stButton>button:hover {
+    background: linear-gradient(90deg, #0ea5e9, #1d4ed8);
+    transform: scale(1.02);
+}
+
+/* Download Button */
+.stDownloadButton>button {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    color: white !important;
+    border-radius: 12px;
+    border: none;
+}
+
+/* Dataframe */
+table {
+    color: white !important;
+    background-color: #111827 !important;
+}
+
+st.dataframe(
+    filtered_df.style
+    .apply(style_risk, axis=1)
+    .set_table_styles([
+        {
+            'selector': 'th',
+            'props': [
+                ('background-color', '#fbcfe8'),
+                ('color', '#831843'),
+                ('font-size', '15px'),
+                ('font-weight', 'bold')
+            ]
+        }
+    ])
+    .set_properties(**{
+        'color': 'white',
+        'background-color': '#111111',
+        'border-color': '#333333'
+    }),
+    use_container_width=True,
+    hide_index=True,
+    height=400
+)
+
+tbody tr td {
+    background-color: #0f172a !important;
+    color: white !important;
+}
+
+/* Charts Background */
+.js-plotly-plot {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # --- Data Initialization ---
 if 'txn_data' not in st.session_state:
     raw_data = generate_sample_data(300)
@@ -88,11 +192,28 @@ def style_risk(row):
     elif row['risk_level'] == 'ELEVATED':
         return ['background-color: #332200'] * len(row)
     return [''] * len(row)
-
 st.dataframe(
-    filtered_df.style.apply(style_risk, axis=1), 
+    filtered_df.style
+    .apply(style_risk, axis=1)
+    .set_table_styles([
+        {
+            'selector': 'th',
+            'props': [
+                ('background-color', '#fbcfe8'),
+                ('color', '#831843'),
+                ('font-size', '15px'),
+                ('font-weight', 'bold')
+            ]
+        }
+    ])
+    .set_properties(**{
+        'color': 'white',
+        'background-color': '#111111',
+        'border-color': '#333333'
+    }),
     use_container_width=True,
-    hide_index=True
+    hide_index=True,
+    height=400
 )
 
 # --- Presentation Demo Actions ---
