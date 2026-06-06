@@ -1,6 +1,6 @@
 import pandas as pd
 
-class FraudEngine:
+class FraudEngine: 
     def __init__(self):
         self.large_transfer_limit = 10000
         self.high_risk_locations = ['Cayman Islands', 'Panama', 'Turkey', 'Egypt']
