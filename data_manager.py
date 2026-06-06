@@ -3,7 +3,7 @@ import numpy as np
 import random
 from datetime import datetime, timedelta
 
-def generate_sample_data(n=450):
+def generate_sample_data(n=500):
     """Generates a synthetic dataset of banking transactions."""
     locations = [
         'New York', 'London', 'Tokyo', 'Cayman Islands', 'Panama', 
