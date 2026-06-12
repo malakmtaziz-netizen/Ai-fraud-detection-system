@@ -2,7 +2,7 @@ import pandas as pd
 
 class FraudEngine:
     def __init__(self):
-        self.large_transfer_limit = 10000
+        self.large_transfer_limit = 10000 
         self.high_risk_locations = ['Cayman Islands', 'Panama', 'Turkey', 'Egypt']
 
     def run_audit(self, df):
@@ -18,7 +18,7 @@ class FraudEngine:
 
         # 2. High-Risk Location
         loc_mask = df['location'].isin(self.high_risk_locations)
-        df.loc[loc_mask, 'risk_score'] += 30
+        df.loc[loc_mask, 'risk_score'] += 40
         df.loc[loc_mask, 'risk_reasons'] += "Offshore Jurisdiction; "
 
         # 3. Structuring
@@ -27,22 +27,9 @@ class FraudEngine:
         df.loc[structuring_mask, 'risk_reasons'] += "Potential Structuring Pattern; "
 
         # 4. Velocity Check: more than 3 transactions in 1 hour
-        df = df.sort_values(['sender_id', 'timestamp']).reset_index(drop=True)
-        df['txn_count_1h'] = 0
-
-        for sender in df['sender_id'].unique():
-            sender_rows = df[df['sender_id'] == sender]
-
-            for index, row in sender_rows.iterrows():
-                current_time = row['timestamp']
-                one_hour_before = current_time - pd.Timedelta(hours=1)
-
-                count = sender_rows[
-                    (sender_rows['timestamp'] >= one_hour_before) &
-                    (sender_rows['timestamp'] <= current_time)
-                ].shape[0]
-
-                df.loc[index, 'txn_count_1h'] = count
+        # Sort by sender and timestamp to ensure rolling count aligns with the dataframe
+        df = df.sort_values(['sender_id', 'timestamp'])
+        df['txn_count_1h'] = df.groupby('sender_id').rolling('1h', on='timestamp')['transaction_id'].count().values
 
         velocity_mask = df['txn_count_1h'] > 3
         df.loc[velocity_mask, 'risk_score'] += 40

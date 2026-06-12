@@ -3,7 +3,7 @@ import numpy as np
 import random
 from datetime import datetime, timedelta
 
-def generate_sample_data(n=450):
+def generate_sample_data(n=550):
     """Generates a synthetic dataset of banking transactions."""
     locations = [
         'New York', 'London', 'Tokyo', 'Cayman Islands', 'Panama', 
@@ -13,9 +13,9 @@ def generate_sample_data(n=450):
     tx_types = ['Wire Transfer', 'ACH', 'ATM Withdrawal', 'Internal Transfer', 'Crypto Gateway']
     
     # Fixed pool of accounts to simulate repeated interactions
-    senders = [f"ACC-{random.randint(1000, 1080)}" for _ in range(29)] # Reduced by 1 to make space
+    senders = [f"ACC-{random.randint(10000, 25000)}" for _ in range(5000)] 
     senders.append("ACC-USER-001") # Explicitly add a user-defined sender ID
-    receivers = [f"ACC-{random.randint(5000, 5080)}" for _ in range(29)] # Reduced by 1 to make space
+    receivers = [f"ACC-{random.randint(30000, 45000)}" for _ in range(5000)] 
     receivers.append("ACC-USER-002") # Explicitly add a user-defined receiver ID
     
     data = []

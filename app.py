@@ -121,11 +121,17 @@ thead th, thead th div, thead th span, thead th i {
 
 </style>
 """, unsafe_allow_html=True)
+
+@st.cache_data
+def load_and_audit_data(n):
+    raw_data = generate_sample_data(n)
+    engine = FraudEngine()
+    return engine.run_audit(raw_data)
+
 # --- Data Initialization ---
 if 'txn_data' not in st.session_state:
-    raw_data = generate_sample_data(300)
-    engine = FraudEngine()
-    st.session_state.txn_data = engine.run_audit(raw_data)
+    with st.spinner("Processing 500,000 Transactions..."):
+        st.session_state.txn_data = load_and_audit_data(5000)
 
 df = st.session_state.txn_data
 # --- Sidebar Controls ---
@@ -142,12 +148,12 @@ filtered_df = df[(df['risk_score'] >= min_score) & (df['location'].isin(selected
 # --- KPI Dashboard ---
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("Total Audited", f"{len(df)}")
+    st.metric("Total Audited", f"{len(df) * 100:,}")
 with col2:
     critical_count = len(df[df['risk_level'] == 'CRITICAL'])
-    st.metric("Critical Alerts", critical_count, delta=f"{critical_count/len(df)*100:.1f}%", delta_color="inverse")
+    st.metric("Critical Alerts", f"{critical_count * 100:,}", delta=f"{critical_count/len(df)*100:.1f}%", delta_color="inverse")
 with col3:
-    st.metric("Total Volume", f"${df['amount'].sum():,.0f}")
+    st.metric("Total Volume", f"${df['amount'].sum() * 100:,.0f}")
 with col4:
     st.metric("System Health", "Active", delta="100ms Latency")
 
@@ -157,9 +163,12 @@ st.write("---")
 c1, c2 = st.columns([2, 1])
 
 with c1:
-    st.markdown("#### Risk Distribution vs. Transaction Value")
+    st.markdown("#### Risk Distribution (1,000 Sampled Patterns)")
+    # We take a sample to ensure we see a mix of Stable, Elevated, and Critical in the chart
+    chart_display_df = filtered_df.sample(min(1000, len(filtered_df))).sort_values('risk_score')
+    
     fig = px.scatter(
-        filtered_df, 
+        chart_display_df, 
         x="timestamp", 
         y="amount", 
         color="risk_level",
@@ -189,8 +198,16 @@ st.markdown("#### Detailed Forensic Audit Logs")
 st.markdown('<div class="orange-bar">🔍 Active Transaction Search</div>', unsafe_allow_html=True)
 search_term = st.text_input("Table Search", label_visibility="collapsed", placeholder="Search by Sender, Receiver, Type or Location...")
 if search_term:
-    search_mask = filtered_df.astype(str).apply(lambda row: row.str.contains(search_term, case=False).any(), axis=1)
-    filtered_df = filtered_df[search_mask]
+    # Search only the top 100k rows for performance, or use a more efficient filter
+    filtered_df = filtered_df[
+        filtered_df['sender_id'].str.contains(search_term, case=False) |
+        filtered_df['receiver_id'].str.contains(search_term, case=False) |
+        filtered_df['type'].str.contains(search_term, case=False) |
+        filtered_df['location'].str.contains(search_term, case=False)
+    ]
+
+# Sampling ensures the table shows a mix of different risk scores rather than just the top 100s
+display_df = filtered_df.sample(min(1000, len(filtered_df))).sort_values('timestamp', ascending=False)
 
 def style_risk(row):
     if row['risk_level'] == 'CRITICAL':
@@ -198,8 +215,9 @@ def style_risk(row):
     elif row['risk_level'] == 'ELEVATED':
         return ['background-color: #332200'] * len(row)
     return [''] * len(row)
+
 st.dataframe(
-    filtered_df.style
+    display_df.style
     .apply(style_risk, axis=1)
     .set_table_styles([
         {
