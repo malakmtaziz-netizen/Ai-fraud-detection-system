@@ -75,7 +75,7 @@ section[data-testid="stSidebar"] * {
 
 .stButton>button:hover {
     background: linear-gradient(90deg, #0ea5e9, #1d4ed8);
-    transform: scale(1.02);
+    transform: scale(1.02); 
 }
 
 /* Download Button */
