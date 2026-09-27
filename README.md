@@ -1,6 +1,7 @@
 
 🛡️ AI Financial Auditor – Bank Transaction Fraud Detection System
 
+
 📌 Overview
 
 AI Financial Auditor is a fraud detection system that analyzes banking transactions and identifies potentially fraudulent activities using rule-based risk analysis. The application provides an interactive dashboard that allows users to monitor transaction risk levels, visualize suspicious patterns, and export audit reports.
