@@ -4,7 +4,7 @@ import plotly.express as px
 from data_manager import generate_sample_data
 from fraud_logic import FraudEngine
 
-# --- Page Setup ---
+# --- Page Setup 
 st.set_page_config(page_title="AI Financial Auditor", layout="wide", page_icon="🛡️")
 
 # Custom CSS for a dark, professional aesthetic
