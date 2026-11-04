@@ -1,5 +1,4 @@
-
-🛡️ AI Financial Auditor – Bank Transaction Fraud Detection System
+ 🛡️ AI Financial Auditor – Bank Transaction Fraud Detection System
 
  
 📌 Overview
